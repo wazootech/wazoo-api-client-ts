@@ -45,4 +45,12 @@ describe("createClient", () => {
       status: 401,
     });
   });
+
+  it("treats exp 0 as a valid non-expiring platform token", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ exp: 0 }), { status: 200 })));
+
+    const client = createClient({ org: "acme", token: "platform-token", baseUrl: "https://api.example.test/v1/" });
+
+    await expect(client.apiTokens.validate("platform-token")).resolves.toEqual({ valid: true, expiry: 0 });
+  });
 });

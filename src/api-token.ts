@@ -54,6 +54,6 @@ export class ApiTokenClient {
       { headers: { Authorization: `Bearer ${token}` } },
     );
     const now = Math.floor(Date.now() / 1000);
-    return { valid: response.exp !== -1 && response.exp > now, expiry: response.exp };
+    return { valid: response.exp === 0 || response.exp > now, expiry: response.exp };
   }
 }
