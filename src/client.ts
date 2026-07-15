@@ -6,7 +6,7 @@ import { UsageClient } from "./usage";
 import { WorldClient } from "./world";
 
 interface ApiErrorResponse {
-  error?: string;
+  error?: string | { message?: string; code?: string };
   message?: string;
 }
 
@@ -67,8 +67,9 @@ export class WazooClient {
 
     if (!response.ok) {
       const body = await response.json().catch(() => null) as ApiErrorResponse | null;
+      const nestedError = typeof body?.error === "object" ? body.error : null;
       throw new WazooClientError(
-        body?.error ?? body?.message ?? `Request failed with status ${response.status}`,
+        nestedError?.message ?? (typeof body?.error === "string" ? body.error : body?.message) ?? `Request failed with status ${response.status}`,
         response.status,
       );
     }

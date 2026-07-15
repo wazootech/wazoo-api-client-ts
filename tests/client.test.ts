@@ -35,7 +35,7 @@ describe("createClient", () => {
 
   it("throws typed API errors", async () => {
     vi.stubGlobal("fetch", vi.fn(async () =>
-      new Response(JSON.stringify({ error: "Nope" }), { status: 401 }),
+      new Response(JSON.stringify({ error: { code: "UNAUTHENTICATED", message: "Nope" } }), { status: 401 }),
     ));
 
     const client = createClient({ org: "acme", token: "bad", baseUrl: "https://api.example.test/v1/" });

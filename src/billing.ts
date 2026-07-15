@@ -3,8 +3,10 @@ import { WazooConfig, resolveOrganization } from "./config";
 
 export interface BillingSummary {
   organization: string;
-  plan?: string;
-  status?: string;
+  state: "BETA_FREE" | "TRIAL" | "ACTIVE" | "PAST_DUE" | "SUSPENDED";
+  provider: "STRIPE";
+  customerConfigured: boolean;
+  paymentRequired: boolean;
   [key: string]: unknown;
 }
 
@@ -47,7 +49,7 @@ export class BillingClient {
 
   async createPortalSession(returnUrl?: string): Promise<BillingPortalSession> {
     return await WazooClient.request<BillingPortalSession>(
-      `organizations/${this.org}/billing/portal`,
+      `organizations/${this.org}/billing:openPortal`,
       this.config,
       {
         method: "POST",
