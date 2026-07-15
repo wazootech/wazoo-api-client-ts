@@ -1,5 +1,6 @@
 import { WazooClient } from "./client";
 import { WazooConfig, resolveOrganization } from "./config";
+import type { UsageAggregate, UsageEvent } from "./usage";
 
 export interface World {
   name: string;
@@ -46,9 +47,8 @@ export interface WorldUsageOptions {
 
 export interface WorldUsage {
   world: string;
-  rowsRead?: number;
-  rowsWritten?: number;
-  storageBytes?: number;
+  total?: UsageAggregate[];
+  events?: UsageEvent[];
   [key: string]: unknown;
 }
 

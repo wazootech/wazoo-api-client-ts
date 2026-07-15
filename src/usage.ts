@@ -10,12 +10,27 @@ export interface OrganizationUsage {
   organization: string;
   worlds?: unknown[];
   total?: UsageAggregate[];
+  events?: UsageEvent[];
   [key: string]: unknown;
 }
 
 export interface UsageAggregate {
   metric: string;
   quantity: number;
+}
+
+export interface UsageEvent {
+  id: string;
+  world?: string | null;
+  metric: string;
+  quantity: number;
+  unit: string;
+  providerCostMicrocents?: number | null;
+  wazooMarkupMicrocents?: number;
+  estimatedCostMicrocents?: number | null;
+  billingSource: "BETA_FREE" | "INTERNAL" | "MANUAL_CREDIT" | "PAID_BALANCE";
+  occurredAt: string;
+  createTime: string;
 }
 
 export interface UsageEventInput {
