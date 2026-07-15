@@ -2,18 +2,27 @@ import { WazooClient } from "./client";
 import { WazooConfig, resolveOrganization } from "./config";
 
 export interface World {
-  id: string;
-  slug: string;
-  label?: string;
-  description?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  name: string;
+  uid: string;
+  displayName: string;
+  region: string;
+  state: "ACTIVE" | "SUSPENDED" | "DELETED" | "FAILED";
+  restorable: boolean;
+  storage?: Record<string, unknown>;
+  provisioning?: Record<string, unknown>;
+  durability?: Record<string, unknown>;
+  createTime?: string;
+  updateTime?: string;
+  deleteTime?: string;
+  expireTime?: string;
 }
 
 export interface CreateWorldInput {
-  label: string;
-  slug?: string;
-  description?: string;
+  worldId: string;
+  world: {
+    displayName: string;
+    region?: string;
+  };
 }
 
 export interface ListWorldsOptions {

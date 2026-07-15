@@ -11,15 +11,18 @@ const wazoo = createClient({
 });
 
 const worlds = await wazoo.worlds.list();
-const world = await wazoo.worlds.create({ label: "My World", slug: "my-world" });
-const authToken = await wazoo.worlds.createToken(world.id);
+const world = await wazoo.worlds.create({
+  worldId: "my-world",
+  world: { displayName: "My World" },
+});
+const authToken = await wazoo.worlds.createToken("my-world");
 ```
 
 ## Configuration
 
 ```ts
 createClient({
-  org: "acme", // or orgId: "org_..."
+  org: "acme",
   token: "wazoo_platform_api_token",
   baseUrl: "https://api.wazoo.dev/v1/", // optional
 });
@@ -29,7 +32,7 @@ createClient({
 
 ```ts
 const wazoo = createClient({
-  orgId: "org_123",
+  org: "acme",
   token: async () => getFreshToken(),
 });
 ```

@@ -1,18 +1,16 @@
 export type WazooToken = string | (() => Promise<string>);
 
 export interface WazooConfig {
-  /** Organization slug. Provide either `org` or `orgId`. */
+  /** Public organization resource ID, for example `acme`. */
   org?: string;
-  /** Organization id. Takes precedence over `org` when both are provided. */
-  orgId?: string;
   token: WazooToken;
   baseUrl?: string;
 }
 
 export function resolveOrganization(config: WazooConfig): string {
-  const organization = config.orgId ?? config.org;
+  const organization = config.org;
   if (!organization) {
-    throw new Error("You must provide an organization slug (org) or id (orgId)");
+    throw new Error("You must provide an organization resource ID (org)");
   }
   return organization;
 }

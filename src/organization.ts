@@ -2,12 +2,18 @@ import { WazooClient } from "./client";
 import { WazooConfig, resolveOrganization } from "./config";
 
 export interface Organization {
-  id: string;
   name: string;
-  slug?: string;
+  uid: string;
+  displayName: string;
+  state: "ACTIVE" | "SUSPENDED";
   metadata?: Record<string, unknown>;
-  createdAt?: string;
-  updatedAt?: string;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface CreateOrganizationInput {
+  organizationId: string;
+  organization: { displayName: string };
 }
 
 export class OrganizationClient {
@@ -25,6 +31,19 @@ export class OrganizationClient {
     return response.organizations ?? [];
   }
 
+  async create(input: CreateOrganizationInput): Promise<Organization> {
+    const response = await WazooClient.request<{ organization: Organization }>(
+      "organizations",
+      this.config,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(input),
+      },
+    );
+    return response.organization;
+  }
+
   async get(org: string = this.org): Promise<Organization> {
     const response = await WazooClient.request<{ organization: Organization }>(
       `organizations/${org}`,
@@ -33,14 +52,14 @@ export class OrganizationClient {
     return response.organization;
   }
 
-  async update(input: Partial<Pick<Organization, "name" | "slug" | "metadata">>): Promise<Organization> {
+  async update(input: { displayName: string }): Promise<Organization> {
     const response = await WazooClient.request<{ organization: Organization }>(
       `organizations/${this.org}`,
       this.config,
       {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(input),
+        body: JSON.stringify({ organization: input, updateMask: "displayName" }),
       },
     );
     return response.organization;
