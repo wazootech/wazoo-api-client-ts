@@ -20,7 +20,8 @@ export interface UsageAggregate {
 }
 
 export interface UsageEvent {
-  id: string;
+  name: string;
+  organization: string;
   world?: string | null;
   metric: string;
   quantity: number;

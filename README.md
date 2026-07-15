@@ -6,7 +6,7 @@ Minimal TypeScript SDK for the Wazoo Platform API.
 import { createClient } from "@wazoo/api";
 
 const wazoo = createClient({
-  org: "acme",
+  organization: "acme",
   token: process.env.WAZOO_API_TOKEN!,
 });
 
@@ -23,8 +23,8 @@ const authToken = await wazoo.worlds.createToken("my-world");
 
 ```ts
 createClient({
-  org: "acme",
-  token: "wazoo_platform_api_token",
+  organization: "acme",
+  token: "wzp_...",
   baseUrl: "https://api.wazoo.dev/v1/", // optional
 });
 ```
@@ -33,7 +33,7 @@ createClient({
 
 ```ts
 const wazoo = createClient({
-  org: "acme",
+  organization: "organizations/acme",
   token: async () => getFreshToken(),
 });
 ```

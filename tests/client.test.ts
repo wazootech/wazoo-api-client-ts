@@ -7,7 +7,7 @@ describe("createClient", () => {
   });
 
   it("requires an organization", () => {
-    expect(() => createClient({ token: "token" })).toThrow(/organization/);
+    expect(() => createClient({ token: "token" } as any)).toThrow(/organization/);
   });
 
   it("uses async tokens and exposes world token paths separately", async () => {
@@ -17,7 +17,7 @@ describe("createClient", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const client = createClient({
-      org: "acme",
+      organization: "acme",
       token: async () => "platform-token",
       baseUrl: "https://api.example.test/v1/",
     });
@@ -38,18 +38,19 @@ describe("createClient", () => {
       new Response(JSON.stringify({ error: { code: "UNAUTHENTICATED", message: "Nope" } }), { status: 401 }),
     ));
 
-    const client = createClient({ org: "acme", token: "bad", baseUrl: "https://api.example.test/v1/" });
+    const client = createClient({ organization: "acme", token: "bad", baseUrl: "https://api.example.test/v1/" });
     await expect(client.worlds.list()).rejects.toMatchObject({
       name: "WazooClientError",
       message: "Nope",
       status: 401,
+      code: "UNAUTHENTICATED",
     });
   });
 
   it("treats exp 0 as a valid non-expiring platform token", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ exp: 0 }), { status: 200 })));
 
-    const client = createClient({ org: "acme", token: "platform-token", baseUrl: "https://api.example.test/v1/" });
+    const client = createClient({ organization: "acme", token: "platform-token", baseUrl: "https://api.example.test/v1/" });
 
     await expect(client.apiTokens.validate("platform-token")).resolves.toEqual({ valid: true, expiry: 0 });
   });

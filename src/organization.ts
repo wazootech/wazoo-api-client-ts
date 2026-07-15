@@ -5,12 +5,14 @@ export interface Organization {
   name: string;
   uid: string;
   displayName: string;
-  state: "ACTIVE" | "SUSPENDED";
+  state: "ACTIVE" | "SUSPENDED" | "DELETED";
   quota?: QuotaStatus;
   billing?: OrganizationBilling;
   metadata?: Record<string, unknown>;
   createTime?: string;
   updateTime?: string;
+  deleteTime?: string;
+  expireTime?: string;
 }
 
 export interface QuotaStatus {
@@ -60,9 +62,9 @@ export class OrganizationClient {
     return response.organization;
   }
 
-  async get(org: string = this.org): Promise<Organization> {
+  async get(organization: string = this.org): Promise<Organization> {
     const response = await WazooClient.request<{ organization: Organization }>(
-      `organizations/${org}`,
+      `organizations/${organizationId(organization)}`,
       this.config,
     );
     return response.organization;
@@ -84,9 +86,14 @@ export class OrganizationClient {
     return response.organization;
   }
 
-  async delete(): Promise<void> {
-    await WazooClient.request<void>(`organizations/${this.org}`, this.config, {
+  async delete(): Promise<Organization> {
+    const response = await WazooClient.request<{ organization: Organization }>(`organizations/${this.org}`, this.config, {
       method: "DELETE",
     });
+    return response.organization;
   }
+}
+
+function organizationId(value: string): string {
+  return value.startsWith("organizations/") ? value.slice("organizations/".length) : value;
 }

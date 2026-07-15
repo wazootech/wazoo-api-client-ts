@@ -1,16 +1,16 @@
 export type WazooToken = string | (() => Promise<string>);
 
 export interface WazooConfig {
-  /** Public organization resource ID, for example `acme`. */
-  org?: string;
+  /** Public organization resource ID, for example `acme` or `organizations/acme`. */
+  organization: string;
   token: WazooToken;
   baseUrl?: string;
 }
 
 export function resolveOrganization(config: WazooConfig): string {
-  const organization = config.org;
+  const organization = config.organization;
   if (!organization) {
-    throw new Error("You must provide an organization resource ID (org)");
+    throw new Error("You must provide an organization resource ID (organization)");
   }
   return organization.startsWith("organizations/") ? organization.slice("organizations/".length) : organization;
 }

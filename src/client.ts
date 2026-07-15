@@ -8,17 +8,28 @@ import { WorldClient } from "./world";
 interface ApiErrorResponse {
   error?: string | { message?: string; code?: string };
   message?: string;
+  quota?: unknown;
+  world?: unknown;
+  details?: unknown;
 }
 
 export class WazooClientError extends Error {
-  status?: number;
+  status?: number | undefined;
+  code?: string | undefined;
+  quota?: unknown;
+  world?: unknown;
+  details?: unknown;
 
-  constructor(message: string, status?: number) {
+  constructor(message: string, status?: number, options: { code?: string | undefined; quota?: unknown; world?: unknown; details?: unknown } = {}) {
     super(message);
     this.name = "WazooClientError";
     if (status !== undefined) {
       this.status = status;
     }
+    this.code = options.code;
+    this.quota = options.quota;
+    this.world = options.world;
+    this.details = options.details;
   }
 }
 
@@ -71,6 +82,7 @@ export class WazooClient {
       throw new WazooClientError(
         nestedError?.message ?? (typeof body?.error === "string" ? body.error : body?.message) ?? `Request failed with status ${response.status}`,
         response.status,
+        { code: nestedError?.code, quota: body?.quota, world: body?.world, details: body?.details },
       );
     }
 
