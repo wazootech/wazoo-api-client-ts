@@ -92,10 +92,29 @@ export class WorldClient {
     return response.world;
   }
 
-  async delete(world: string): Promise<void> {
-    await WazooClient.request<void>(`organizations/${this.org}/worlds/${world}`, this.config, {
+  async delete(world: string): Promise<World> {
+    const response = await WazooClient.request<{ world: World }>(`organizations/${this.org}/worlds/${world}`, this.config, {
       method: "DELETE",
     });
+    return response.world;
+  }
+
+  async undelete(world: string): Promise<World> {
+    const response = await WazooClient.request<{ world: World }>(
+      `organizations/${this.org}/worlds/${world}:undelete`,
+      this.config,
+      { method: "POST" },
+    );
+    return response.world;
+  }
+
+  async sync(world: string): Promise<World> {
+    const response = await WazooClient.request<{ world: World }>(
+      `organizations/${this.org}/worlds/${world}:sync`,
+      this.config,
+      { method: "POST" },
+    );
+    return response.world;
   }
 
   async createToken(world: string, options?: CreateWorldTokenOptions): Promise<WorldAuthToken> {

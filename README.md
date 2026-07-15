@@ -40,7 +40,7 @@ const wazoo = createClient({
 ## Resources
 
 - `organizations`: list, get, update, delete
-- `worlds`: list, get, create, delete, createToken, rotateTokens, usage
+- `worlds`: list, get, create, delete, undelete, sync, createToken, rotateTokens, usage
 - `apiTokens`: list, create, revoke, validate Platform API tokens
 - `usage`: get organization usage
 - `billing`: get Stripe-shaped billing summary, invoices, portal session
