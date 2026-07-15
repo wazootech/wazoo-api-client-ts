@@ -13,6 +13,11 @@ export interface OrganizationUsage {
   [key: string]: unknown;
 }
 
+export interface OrganizationLimit {
+  metric: string;
+  limitQuantity: number;
+}
+
 export class UsageClient {
   constructor(private config: WazooConfig) {}
 
@@ -30,6 +35,14 @@ export class UsageClient {
       this.config,
     );
     return response.usage;
+  }
+
+  async limits(): Promise<OrganizationLimit[]> {
+    const response = await WazooClient.request<{ limits: OrganizationLimit[] }>(
+      `organizations/${this.org}/limits`,
+      this.config,
+    );
+    return response.limits;
   }
 }
 

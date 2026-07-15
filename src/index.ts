@@ -8,7 +8,7 @@ export type {
 } from "./api-token";
 export type { BillingPortalSession, BillingSummary, Invoice } from "./billing";
 export type { CreateOrganizationInput, Organization } from "./organization";
-export type { OrganizationUsage, UsageOptions } from "./usage";
+export type { OrganizationLimit, OrganizationUsage, UsageOptions } from "./usage";
 export type {
   CreateWorldInput,
   CreateWorldTokenOptions,
