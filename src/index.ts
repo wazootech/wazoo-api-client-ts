@@ -7,14 +7,16 @@ export type {
   RevokedPlatformApiToken,
 } from "./api-token";
 export type { BillingPortalSession, BillingSummary, Invoice } from "./billing";
-export type { CreateOrganizationInput, Organization } from "./organization";
-export type { OrganizationLimit, OrganizationUsage, UsageOptions } from "./usage";
+export type { CreateOrganizationInput, Organization, OrganizationBilling, QuotaStatus } from "./organization";
+export type { OrganizationLimit, OrganizationUsage, UsageAggregate, UsageEventInput, UsageOptions } from "./usage";
 export type {
   CreateWorldInput,
   CreateWorldTokenOptions,
   ListWorldsOptions,
   World,
   WorldAuthToken,
+  WorldSyncReport,
+  WorldSyncResult,
   WorldUsage,
   WorldUsageOptions,
 } from "./world";

@@ -9,8 +9,25 @@ export interface UsageOptions {
 export interface OrganizationUsage {
   organization: string;
   worlds?: unknown[];
-  total?: Record<string, unknown>;
+  total?: UsageAggregate[];
   [key: string]: unknown;
+}
+
+export interface UsageAggregate {
+  metric: string;
+  quantity: number;
+}
+
+export interface UsageEventInput {
+  metric: string;
+  quantity: number;
+  unit?: string;
+  worldId?: string;
+  providerCostMicrocents?: number;
+  wazooMarkupMicrocents?: number;
+  estimatedCostMicrocents?: number;
+  billingSource?: "BETA_FREE" | "INTERNAL" | "MANUAL_CREDIT" | "PAID_BALANCE";
+  occurredAt?: string;
 }
 
 export interface OrganizationLimit {
@@ -43,6 +60,14 @@ export class UsageClient {
       this.config,
     );
     return response.limits;
+  }
+
+  async record(event: UsageEventInput): Promise<{ accepted: true }> {
+    return await WazooClient.request<{ accepted: true }>(
+      `organizations/${this.org}/usage`,
+      this.config,
+      { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(event) },
+    );
   }
 }
 

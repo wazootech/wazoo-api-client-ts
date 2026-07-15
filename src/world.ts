@@ -52,6 +52,18 @@ export interface WorldUsage {
   [key: string]: unknown;
 }
 
+export interface WorldSyncReport {
+  status: "HEALTHY" | "REPAIRED" | "BLOCKED" | "FAILED";
+  actions: Array<{ code: string; message: string }>;
+  warnings: Array<{ code: string; message: string }>;
+  errors: Array<{ code: string; message: string }>;
+}
+
+export interface WorldSyncResult {
+  world: World;
+  syncReport: WorldSyncReport;
+}
+
 export class WorldClient {
   constructor(private config: WazooConfig) {}
 
@@ -73,7 +85,7 @@ export class WorldClient {
 
   async get(world: string): Promise<World> {
     const response = await WazooClient.request<{ world: World }>(
-      `organizations/${this.org}/worlds/${world}`,
+      `organizations/${this.org}/worlds/${worldId(world)}`,
       this.config,
     );
     return response.world;
@@ -93,45 +105,51 @@ export class WorldClient {
   }
 
   async delete(world: string): Promise<World> {
-    const response = await WazooClient.request<{ world: World }>(`organizations/${this.org}/worlds/${world}`, this.config, {
+    const response = await WazooClient.request<{ world: World }>(`organizations/${this.org}/worlds/${worldId(world)}`, this.config, {
       method: "DELETE",
     });
     return response.world;
   }
 
-  async undelete(world: string): Promise<World> {
-    const response = await WazooClient.request<{ world: World }>(
-      `organizations/${this.org}/worlds/${world}:undelete`,
+  async undelete(world: string): Promise<WorldSyncResult> {
+    return await WazooClient.request<WorldSyncResult>(
+      `organizations/${this.org}/worlds/${worldId(world)}:undelete`,
       this.config,
       { method: "POST" },
     );
-    return response.world;
   }
 
-  async sync(world: string): Promise<World> {
-    const response = await WazooClient.request<{ world: World }>(
-      `organizations/${this.org}/worlds/${world}:sync`,
+  async sync(world: string): Promise<WorldSyncResult> {
+    return await WazooClient.request<WorldSyncResult>(
+      `organizations/${this.org}/worlds/${worldId(world)}:sync`,
       this.config,
       { method: "POST" },
+    );
+  }
+
+  async update(world: string, input: { displayName?: string; region?: string; state?: "ACTIVE" | "SUSPENDED" }): Promise<World> {
+    const updateMask = [input.displayName !== undefined ? "displayName" : undefined, input.region !== undefined ? "region" : undefined, input.state !== undefined ? "state" : undefined]
+      .filter(Boolean)
+      .join(",");
+    const response = await WazooClient.request<{ world: World }>(
+      `organizations/${this.org}/worlds/${worldId(world)}`,
+      this.config,
+      { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ world: input, updateMask }) },
     );
     return response.world;
   }
 
   async createToken(world: string, options?: CreateWorldTokenOptions): Promise<WorldAuthToken> {
-    const query = queryString({
-      expiration: options?.expiration,
-      authorization: options?.authorization,
-    });
     return await WazooClient.request<WorldAuthToken>(
-      `organizations/${this.org}/worlds/${world}/auth/tokens${query}`,
+      `organizations/${this.org}/worlds/${worldId(world)}/auth/tokens`,
       this.config,
-      { method: "POST" },
+      { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ expiresAt: options?.expiration, authorization: options?.authorization }) },
     );
   }
 
   async rotateTokens(world: string): Promise<void> {
     await WazooClient.request<void>(
-      `organizations/${this.org}/worlds/${world}/auth/rotate`,
+      `organizations/${this.org}/worlds/${worldId(world)}/auth/rotate`,
       this.config,
       { method: "POST" },
     );
@@ -143,11 +161,18 @@ export class WorldClient {
       to: formatDate(options?.to),
     });
     const response = await WazooClient.request<{ usage: WorldUsage }>(
-      `organizations/${this.org}/worlds/${world}/usage${query}`,
+      `organizations/${this.org}/worlds/${worldId(world)}/usage${query}`,
       this.config,
     );
     return response.usage;
   }
+}
+
+function worldId(value: string): string {
+  const marker = "/worlds/";
+  const index = value.indexOf(marker);
+  if (index >= 0) return value.slice(index + marker.length);
+  return value.startsWith("worlds/") ? value.slice("worlds/".length) : value;
 }
 
 function queryString(values: Record<string, string | number | undefined>): string {

@@ -6,9 +6,25 @@ export interface Organization {
   uid: string;
   displayName: string;
   state: "ACTIVE" | "SUSPENDED";
+  quota?: QuotaStatus;
+  billing?: OrganizationBilling;
   metadata?: Record<string, unknown>;
   createTime?: string;
   updateTime?: string;
+}
+
+export interface QuotaStatus {
+  state: "OK" | "WARN" | "THROTTLED" | "SUSPENDED" | "MANUAL_REVIEW";
+  reason?: string;
+  retryDelay?: string;
+  usagePercent?: number;
+}
+
+export interface OrganizationBilling {
+  state: "BETA_FREE" | "TRIAL" | "ACTIVE" | "PAST_DUE" | "SUSPENDED";
+  provider: "STRIPE";
+  customerConfigured: boolean;
+  paymentRequired: boolean;
 }
 
 export interface CreateOrganizationInput {
@@ -52,14 +68,17 @@ export class OrganizationClient {
     return response.organization;
   }
 
-  async update(input: { displayName: string }): Promise<Organization> {
+  async update(input: { displayName?: string; state?: "ACTIVE" | "SUSPENDED" }): Promise<Organization> {
+    const updateMask = [input.displayName !== undefined ? "displayName" : undefined, input.state !== undefined ? "state" : undefined]
+      .filter(Boolean)
+      .join(",");
     const response = await WazooClient.request<{ organization: Organization }>(
       `organizations/${this.org}`,
       this.config,
       {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ organization: input, updateMask: "displayName" }),
+        body: JSON.stringify({ organization: input, updateMask }),
       },
     );
     return response.organization;

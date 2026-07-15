@@ -12,7 +12,7 @@ export function resolveOrganization(config: WazooConfig): string {
   if (!organization) {
     throw new Error("You must provide an organization resource ID (org)");
   }
-  return organization;
+  return organization.startsWith("organizations/") ? organization.slice("organizations/".length) : organization;
 }
 
 export async function resolveToken(config: WazooConfig): Promise<string> {
