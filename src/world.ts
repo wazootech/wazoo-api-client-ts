@@ -6,7 +6,6 @@ export interface World {
   slug: string;
   label?: string;
   description?: string;
-  group?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -15,11 +14,9 @@ export interface CreateWorldInput {
   label: string;
   slug?: string;
   description?: string;
-  group?: string;
 }
 
 export interface ListWorldsOptions {
-  group?: string;
   page?: number;
   pageSize?: number;
 }
@@ -55,7 +52,6 @@ export class WorldClient {
 
   async list(options?: ListWorldsOptions): Promise<World[]> {
     const query = queryString({
-      group: options?.group,
       page: options?.page,
       page_size: options?.pageSize,
     });

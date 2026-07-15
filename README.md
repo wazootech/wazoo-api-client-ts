@@ -37,7 +37,6 @@ const wazoo = createClient({
 ## Resources
 
 - `organizations`: list, get, update, delete
-- `groups`: list, get, create, delete
 - `worlds`: list, get, create, delete, createToken, rotateTokens, usage
 - `apiTokens`: list, create, revoke, validate Platform API tokens
 - `usage`: get organization usage

@@ -7,7 +7,6 @@ export type {
   RevokedPlatformApiToken,
 } from "./api-token";
 export type { BillingPortalSession, BillingSummary, Invoice } from "./billing";
-export type { CreateGroupInput, Group } from "./group";
 export type { Organization } from "./organization";
 export type { OrganizationUsage, UsageOptions } from "./usage";
 export type {

@@ -1,7 +1,6 @@
 import { ApiTokenClient } from "./api-token";
 import { BillingClient } from "./billing";
 import { WazooConfig, resolveOrganization, resolveToken } from "./config";
-import { GroupClient } from "./group";
 import { OrganizationClient } from "./organization";
 import { UsageClient } from "./usage";
 import { WorldClient } from "./world";
@@ -25,7 +24,6 @@ export class WazooClientError extends Error {
 
 export class WazooClient {
   public organizations: OrganizationClient;
-  public groups: GroupClient;
   public worlds: WorldClient;
   public apiTokens: ApiTokenClient;
   public usage: UsageClient;
@@ -46,7 +44,6 @@ export class WazooClient {
     resolveOrganization(this.config);
 
     this.organizations = new OrganizationClient(this.config);
-    this.groups = new GroupClient(this.config);
     this.worlds = new WorldClient(this.config);
     this.apiTokens = new ApiTokenClient(this.config);
     this.usage = new UsageClient(this.config);
