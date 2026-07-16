@@ -1,4 +1,5 @@
 import { ApiTokenClient } from "./api-token";
+import { BetaApplicationClient } from "./beta-application";
 import { BillingClient } from "./billing";
 import { WazooConfig, resolveOrganization, resolveToken } from "./config";
 import { OrganizationClient } from "./organization";
@@ -38,6 +39,7 @@ export class WazooClient {
   public organizations: OrganizationClient;
   public worlds: WorldClient;
   public apiTokens: ApiTokenClient;
+  public betaApplications: BetaApplicationClient;
   public usage: UsageClient;
   public billing: BillingClient;
 
@@ -58,6 +60,7 @@ export class WazooClient {
     this.organizations = new OrganizationClient(this.config);
     this.worlds = new WorldClient(this.config);
     this.apiTokens = new ApiTokenClient(this.config);
+    this.betaApplications = new BetaApplicationClient(this.config);
     this.usage = new UsageClient(this.config);
     this.billing = new BillingClient(this.config);
   }

@@ -7,6 +7,8 @@ export type {
   RevokedPlatformApiToken,
 } from "./api-token";
 export type { BillingPortalSession, BillingSummary, Invoice } from "./billing";
+export { submitBetaApplication } from "./beta-application";
+export type { ApproveBetaApplicationInput, BetaApplication, SubmitBetaApplicationInput } from "./beta-application";
 export type { CreateOrganizationInput, Organization, OrganizationBilling, QuotaStatus } from "./organization";
 export type { OrganizationLimit, OrganizationUsage, UsageAggregate, UsageEvent, UsageEventInput, UsageOptions } from "./usage";
 export type {
