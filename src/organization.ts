@@ -70,7 +70,7 @@ export class OrganizationClient {
     return response.organization;
   }
 
-  async update(input: { displayName?: string; state?: "ACTIVE" | "SUSPENDED" }): Promise<Organization> {
+  async patch(input: { displayName?: string; state?: "ACTIVE" | "SUSPENDED" }): Promise<Organization> {
     const updateMask = [input.displayName !== undefined ? "displayName" : undefined, input.state !== undefined ? "state" : undefined]
       .filter(Boolean)
       .join(",");

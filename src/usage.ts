@@ -30,7 +30,6 @@ export interface UsageEvent {
   wazooMarkupMicrocents?: number;
   estimatedCostMicrocents?: number | null;
   billingSource: "BETA_FREE" | "INTERNAL" | "MANUAL_CREDIT" | "PAID_BALANCE";
-  occurredAt: string;
   createTime: string;
 }
 
@@ -38,12 +37,12 @@ export interface UsageEventInput {
   metric: string;
   quantity: number;
   unit?: string;
-  worldId?: string;
+  world?: string;
   providerCostMicrocents?: number;
   wazooMarkupMicrocents?: number;
   estimatedCostMicrocents?: number;
   billingSource?: "BETA_FREE" | "INTERNAL" | "MANUAL_CREDIT" | "PAID_BALANCE";
-  occurredAt?: string;
+  createTime?: string;
 }
 
 export interface OrganizationLimit {

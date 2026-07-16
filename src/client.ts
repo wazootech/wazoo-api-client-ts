@@ -6,7 +6,8 @@ import { UsageClient } from "./usage";
 import { WorldClient } from "./world";
 
 interface ApiErrorResponse {
-  error?: string | { message?: string; code?: string };
+  error?: string | { message?: string; code?: string; details?: unknown };
+  code?: string;
   message?: string;
   quota?: unknown;
   world?: unknown;
@@ -82,7 +83,7 @@ export class WazooClient {
       throw new WazooClientError(
         nestedError?.message ?? (typeof body?.error === "string" ? body.error : body?.message) ?? `Request failed with status ${response.status}`,
         response.status,
-        { code: nestedError?.code, quota: body?.quota, world: body?.world, details: body?.details },
+        { code: nestedError?.code ?? body?.code, quota: body?.quota, world: body?.world, details: nestedError?.details ?? body?.details },
       );
     }
 

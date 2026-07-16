@@ -40,13 +40,13 @@ const wazoo = createClient({
 
 ## Resources
 
-- `organizations`: list, get, update, delete
-- `worlds`: list, get, create, delete, undelete, sync, createToken, rotateTokens, usage
+- `organizations`: list, create, get, patch, delete
+- `worlds`: list, get, create, patch, delete, undelete, sync, createToken, revokeToken, rotateTokens, usage
 - `apiTokens`: list, create, revoke, validate Platform API tokens
 - `usage`: get organization usage and limits; record internal resource usage
 - `billing`: get Stripe-shaped billing summary, invoices, portal session
 
-Platform API tokens (`apiTokens`) authenticate management API calls. World auth tokens (`worlds.createToken`, `worlds.rotateTokens`) are scoped to data-plane access for a specific World.
+Platform API tokens (`apiTokens`) authenticate management API calls. World auth tokens (`worlds.createToken`, `worlds.revokeToken`, `worlds.rotateTokens`) are scoped to data-plane access for a specific World. Rotation atomically revokes existing World tokens and returns a replacement token once.
 
 ## Development
 

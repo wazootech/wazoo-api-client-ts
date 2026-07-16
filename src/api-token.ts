@@ -2,7 +2,7 @@ import { WazooClient } from "./client";
 import { WazooConfig } from "./config";
 
 export interface PlatformApiToken {
-  id: string;
+  uid: string;
   name: string;
   createdAt?: string;
 }

@@ -32,6 +32,8 @@ export interface ListWorldsOptions {
 }
 
 export interface WorldAuthToken {
+  uid: string;
+  name?: string;
   token: string;
 }
 
@@ -127,7 +129,7 @@ export class WorldClient {
     );
   }
 
-  async update(world: string, input: { displayName?: string; region?: string; state?: "ACTIVE" | "SUSPENDED" }): Promise<World> {
+  async patch(world: string, input: { displayName?: string; region?: string; state?: "ACTIVE" | "SUSPENDED" }): Promise<World> {
     const updateMask = [input.displayName !== undefined ? "displayName" : undefined, input.region !== undefined ? "region" : undefined, input.state !== undefined ? "state" : undefined]
       .filter(Boolean)
       .join(",");
@@ -147,11 +149,19 @@ export class WorldClient {
     );
   }
 
-  async rotateTokens(world: string): Promise<void> {
+  async revokeToken(world: string, tokenUid: string): Promise<void> {
     await WazooClient.request<void>(
+      `organizations/${this.org}/worlds/${worldId(world)}/auth/tokens/${tokenUid}`,
+      this.config,
+      { method: "DELETE" },
+    );
+  }
+
+  async rotateTokens(world: string, options?: { name?: string; expiresAt?: string }): Promise<WorldAuthToken> {
+    return await WazooClient.request<WorldAuthToken>(
       `organizations/${this.org}/worlds/${worldId(world)}/auth/rotate`,
       this.config,
-      { method: "POST" },
+      { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(options ?? {}) },
     );
   }
 
